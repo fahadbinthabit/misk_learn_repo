@@ -32,8 +32,6 @@ mimo <- read_csv("GlobalFirePower.csv")
 
 glimpse(mimo)
 
-mimo %>%
-    arrange(desc("Fit-for-Sevice"))
 
 
 head(mimo[order(mimo$`Total Military Personnel`, decreasing=TRUE), ], 10) %>%
