@@ -35,32 +35,41 @@ glimpse(mimo)
 
 
 head(mimo[order(mimo$`Total Military Personnel`, decreasing=TRUE), ], 10) %>%
-  select(Country,ISO3,
-         `Total Military Personnel`)
+  select(Country,
+         `Total Military Personnel`) %>% ggplot(aes(Country,`Total Military Personnel`)) + geom_col()
 
 head(mimo[order(mimo$`Fighter Aircraft`, decreasing=TRUE), ], 10) %>%
-  select(Country,ISO3,
-         `Fighter Aircraft`)
+  select(Country,
+         `Fighter Aircraft`) %>% ggplot(aes(Country,`Fighter Aircraft`)) + geom_col()
 
 head(mimo[order(mimo$`Attack Helicopters`, decreasing=TRUE), ], 10) %>%
-  select(Country,ISO3,
-         `Attack Helicopters`)
+  select(Country,
+         `Attack Helicopters`) %>% ggplot(aes(Country,`Total Military Personnel`)) + geom_col()
 
 
 head(mimo[order(mimo$`Combat Tanks`, decreasing=TRUE), ], 10) %>%
-  select(Country,ISO3,
-         `Combat Tanks`)
+  select(Country,
+         `Combat Tanks`) %>% ggplot(aes(Country,`Combat Tanks`)) + geom_col()
 
 
 head(mimo[order(mimo$`Submarines`, decreasing=TRUE), ], 10) %>%
-  select(Country,ISO3,
-         `Submarines`)
+  select(Country,
+         `Submarines`) %>% ggplot(aes(Country,`Submarines`)) + geom_col()
 
 
 head(mimo[order(mimo$`Rocket Projectors`, decreasing=TRUE), ], 10) %>%
-  select(Country,ISO3,
-         `Rocket Projectors`)
+  select(Country,
+         `Rocket Projectors`) %>% ggplot(aes(Country,`Rocket Projectors`)) + geom_col()
 
 head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 10) %>%
-  select(Country,ISO3,
-         `Destroyers`)
+  select(Country,
+         `Destroyers`) %>% ggplot(aes(Country,`Destroyers`)) + geom_col() + coord_flip()
+
+
+
+
+
+
+
+
+
