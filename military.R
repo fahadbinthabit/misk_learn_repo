@@ -23,18 +23,46 @@ library(rnaturalearth)
 library(rnaturalearthdata)
 library(maps)
 library(ggrepel)
+library(HSAUR)
+library(dplyr)
 theme_set(theme_bw())
 
 
 mimo <- read_csv("GlobalFirePower.csv")
-mimo
 
-topfit <- mimo %>%
-  
+glimpse(mimo)
 
-
-summary(mimo)
-
-ggplot(mimo, aes(ISO3,`Fit-for-Service`)) + geom_point()
+mimo %>%
+    arrange(desc("Fit-for-Sevice"))
 
 
+head(mimo[order(mimo$`Total Military Personnel`, decreasing=TRUE), ], 10) %>%
+  select(Country,ISO3,
+         `Total Military Personnel`)
+
+head(mimo[order(mimo$`Fighter Aircraft`, decreasing=TRUE), ], 10) %>%
+  select(Country,ISO3,
+         `Fighter Aircraft`)
+
+head(mimo[order(mimo$`Attack Helicopters`, decreasing=TRUE), ], 10) %>%
+  select(Country,ISO3,
+         `Attack Helicopters`)
+
+
+head(mimo[order(mimo$`Combat Tanks`, decreasing=TRUE), ], 10) %>%
+  select(Country,ISO3,
+         `Combat Tanks`)
+
+
+head(mimo[order(mimo$`Submarines`, decreasing=TRUE), ], 10) %>%
+  select(Country,ISO3,
+         `Submarines`)
+
+
+head(mimo[order(mimo$`Rocket Projectors`, decreasing=TRUE), ], 10) %>%
+  select(Country,ISO3,
+         `Rocket Projectors`)
+
+head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 10) %>%
+  select(Country,ISO3,
+         `Destroyers`)
