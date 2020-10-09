@@ -93,7 +93,11 @@ mimo %>%
   select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Rocket Projectors`, `Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, Submarines, `Patrol Craft`, `Mine Warfare Vessels`) %>%
   pivot_longer(-Country, names_to = "Weapons" , values_to = "value") %>%
   filter(Country == "Saudi Arabia") %>% 
-  ggplot(aes(Weapons, value)) + geom_col() + coord_flip() 
+    ggplot(aes(Weapons, value)) + geom_col() + coord_flip()
+
+
+
+# strength per country
 
 
 mimo %>% 
@@ -101,7 +105,6 @@ mimo %>%
   pivot_longer(-Country, names_to = "type", values_to ="strenght" ) %>%
   filter(Country == "Saudi Arabia") %>%
   ggplot(aes(type, strenght)) + geom_col() + coord_flip() 
-  
 
 
 
@@ -112,66 +115,6 @@ mimo %>%
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# under construction
-
-
-world <- ne_countries(scale = "medium", returnclass = "sf")
-# gene world map
-ggplot(data = world) +
-  geom_sf() +
-  labs( x = "Longitude", y = "Latitude") +
-  ggtitle("World map", subtitle = paste0("(", length(unique(world$admin)), " countries)"))
-
-world
-
-
-mp_map <- c( mimo$Country, mimo$ISO3, mimo$`Total Military Personnel`)
-                               
-inthemap <- joinCountryData2Map(mimo, 
-                                  joinCode = "ISO3",
-                                  nameJoinColumn = "Country")
-
-mapParams <- mapCountryData(inthemap, 
-                            nameColumnToPlot= "Total Military Personnel",
-                            oceanCol = "azure2",
-                            catMethod = "categorical",
-                            missingCountryCol = gray(.8),
-                           # colourPalette = c("coral",
-                                             # "coral2",
-                                           #   "coral3", "orangered", 
-                                           #   "orangered3", "orangered4"),
-                            addLegend = F,
-                            mapTitle = "",
-                            border = NA)
-# add legend and display map
-do.call(addMapLegendBoxes, c(mapParams,
-                             x = 'bottom',
-                             title = "No. of visits",
-                             horiz = TRUE,
-                             bg = "transparent",
-                             bty = "n"))
 
 
 
