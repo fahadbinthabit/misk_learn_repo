@@ -45,40 +45,40 @@ mimo <- read_csv("GlobalFirePower.csv")
 
 
 
-head(mimo[order(mimo$`Total Military Personnel`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Total Military Personnel`, decreasing=TRUE), ], 20) %>%
   select(Country,
          `Total Military Personnel`) %>% ggplot(aes(Country,`Total Military Personnel`)) + geom_col() + coord_flip()
 
-head(mimo[order(mimo$`Fighter Aircraft`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Fighter Aircraft`, decreasing=TRUE), ], 20) %>%
   select(Country,
          `Fighter Aircraft`) %>% ggplot(aes(Country,`Fighter Aircraft`)) + geom_col() + coord_flip()
 
-head(mimo[order(mimo$`Attack Helicopters`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Attack Helicopters`, decreasing=TRUE), ], 20) %>%
   select(Country,
-         `Attack Helicopters`) %>% ggplot(aes(Country,`Total Military Personnel`)) + geom_col() + coord_flip()
+         `Attack Helicopters`) %>% ggplot(aes(Country,`Attack Helicopters`)) + geom_col() + coord_flip()
 
 
-head(mimo[order(mimo$`Combat Tanks`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Combat Tanks`, decreasing=TRUE), ], 20) %>%
   select(Country,
          `Combat Tanks`) %>% ggplot(aes(Country,`Combat Tanks`)) + geom_col() + coord_flip()
 
 
-head(mimo[order(mimo$`Submarines`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Submarines`, decreasing=TRUE), ], 20) %>%
   select(Country,
          `Submarines`) %>% ggplot(aes(Country,`Submarines`)) + geom_col() + coord_flip()
 
 
-head(mimo[order(mimo$`Rocket Projectors`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Rocket Projectors`, decreasing=TRUE), ], 20) %>%
   select(Country,
          `Rocket Projectors`) %>% ggplot(aes(Country,`Rocket Projectors`)) + geom_col() + coord_flip()
 
-head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 20) %>%
   select(Country,
          `Destroyers`) %>% ggplot(aes(Country,`Destroyers`)) + geom_col() + coord_flip()
 
 
 
-head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 10) %>%
+head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 20) %>%
   select(Country,
          `Destroyers`) %>% ggplot(aes(Country,`Destroyers`)) + geom_col() + coord_flip()
 
@@ -89,13 +89,11 @@ head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 10) %>%
 # weapons per country # !!! < change country in filter > !!!!
 
 
-mimo <- mimos %>%
-  select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Rocket Projectors`, `Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, Submarines, `Patrol Craft`, `Mine Warfare Vessels`) 
-
-mimos_ %>%
+mimo %>%
+  select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Rocket Projectors`, `Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, Submarines, `Patrol Craft`, `Mine Warfare Vessels`) %>%
   pivot_longer(-Country, names_to = "Weapons" , values_to = "value") %>%
   filter(Country == "Russia") %>% 
-  ggplot(aes(Weapons, value)) + geom_col() + coord_flip()
+  ggplot(aes(Weapons, value)) + geom_col() + coord_flip() 
 
 
 
