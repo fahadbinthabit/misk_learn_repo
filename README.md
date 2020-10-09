@@ -1,7 +1,3 @@
-# misk_learn_repo
-first test using git and git hub  
+# Global Fire Power
 
-## introduction
-this is a sample repo to make sure everything is fine 
-
-### another change 
+The Global fire power show case military across thew globe 
