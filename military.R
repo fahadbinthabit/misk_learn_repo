@@ -92,11 +92,16 @@ head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 20) %>%
 mimo %>%
   select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Rocket Projectors`, `Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, Submarines, `Patrol Craft`, `Mine Warfare Vessels`) %>%
   pivot_longer(-Country, names_to = "Weapons" , values_to = "value") %>%
-  filter(Country == "Russia") %>% 
+  filter(Country == "Saudi Arabia") %>% 
   ggplot(aes(Weapons, value)) + geom_col() + coord_flip() 
 
 
-
+mimo %>% 
+  select(Country, `Total Aircraft Strength`,`Total Helicopter Strength`,`Merchant Marine Strength`) %>%
+  pivot_longer(-Country, names_to = "type", values_to ="strenght" ) %>%
+  filter(Country == "Saudi Arabia") %>%
+  ggplot(aes(type, strenght)) + geom_col() + coord_flip() 
+  
 
 
 
