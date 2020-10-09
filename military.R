@@ -188,10 +188,14 @@ radarchart( data  , axistype=1 ,
 radarchart(data)
 
 
+#countries that might survive a WW3 ( we only measure the aircraft strength)
+
+mimo %>%
+  select(Country, `Total Aircraft Strength`  ) %>%
+  filter(mimo$`Total Aircraft Strength` > 434)
 
 
-
-
+  
 
 
 
