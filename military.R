@@ -44,7 +44,7 @@ mimo <- read_csv("GlobalFirePower.csv")
 #top ten military Army in terms of  Military personnel , Tanks , etc
 
 
-scipen(9000000)
+
 head(mimo[order(mimo$`Total Military Personnel`, decreasing=TRUE), ], 10) %>%
   select(Country,
          `Total Military Personnel`) %>% ggplot(aes(Country,`Total Military Personnel`)) + geom_col() + coord_flip()
