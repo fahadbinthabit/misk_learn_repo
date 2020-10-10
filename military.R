@@ -92,41 +92,8 @@ irrigation_t %>%
   mutate(total_ = sum (value)) %>%
   select(year, total_)%>%
   filter(row_number(year) == TRUE )   
-  
-  
-# : 
 
-
-
-
-energy
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-na.omit(mimo)
-
-
-
-
-
-#top ten military Army in terms of  Military personnel , Tanks , etc
+#top ten military Army in terms of  Military personnel , Tanks , etc :
 
 
 
@@ -210,82 +177,6 @@ mimo %>%
   pivot_longer(-Country, names_to = "type", values_to ="strenght" ) %>%
   filter(Country == "Saudi Arabia") %>%
   ggplot(aes(type, strenght)) + geom_col() + coord_flip() 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### still working on spider plot :
-
-
-
-mimospider <- mimo %>% 
-  select(Country, `Total Aircraft Strength`,`Total Helicopter Strength`,`Merchant Marine Strength`) %>%
-  pivot_longer(-Country, names_to = "type", values_to ="strenght" ) %>%
-  filter(Country == "Saudi Arabia") 
-
-library(fmsb)
-
-data <- as.data.frame(matrix( sample( mimospider$strenght , 10 , replace=T) , ncol=100000))
- 
-# Create data: note in High school for Jonathan:
-
-colnames(data) <- mimospider$type
-
-data <- rbind(rep(20,10) , rep(0,100) , data)
-
-
-# To use the fmsb package, I have to add 2 lines to the dataframe: the max and min of each topic to show on the plot!
-data <- rbind(rep(100000,10) , rep(0,100) , data)
-
-radarchart( data  , axistype=1 , 
-            
-            #custom polygon
-            pcol=rgb(0.2,0.5,0.5,0.9) , pfcol=rgb(0.2,0.5,0.5,0.5) , plwd=4 , 
-            
-            #custom the grid
-            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,1000,100), cglwd=0.8,
-            
-            #custom labels
-            vlcex=0.8 
-)
-
-# Check your data, it has to look like this!
-# head(data)
-
-# The default radar chart 
-radarchart(data)
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
 
 
 
