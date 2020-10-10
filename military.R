@@ -7,40 +7,125 @@
 
 library(tidyverse)
 library(rio)
-library(lubridate)
-library(rgios)
-library(cowplot)
-library(googleway)
-library(ggplot2)
-library(ggrepel)
-library(ggspatial)
-library(libwgeom)
-library(sf)
-library(tidyverse)
-library(rio)
-library(lubridate)
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(maps)
-library(ggrepel)
-library(HSAUR)
-library(dplyr)
-library(scales)
-library(rgeos)
-library(classInt)
-library(RColorBrewer)
-library(rworldmap)
-theme_set(theme_bw())
 
 
 
-# Data set
+# Data set:
+
 mimo1 <- read_csv("GlobalFirePower.csv")
 mimo <- na.omit(mimo1)
+
+# :
+
+
+defense_budget
+airpower 
+military_units 
+var(gfp_as) # Global strength variance
+sd(gfp_as)  #Global SD strenght
+
+
+# Run Code :
+
+
+defense_budget <- head(mimo[order(mimo$`Defense Budget`,
+                          decreasing=TRUE), ], 20) %>%
+  
+  select(Country,
+         `Defense Budget`)
+
+
+
+
+
+military_assets <- mimo %>%
+  select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, `Rocket Projectors`, Submarines, `Patrol Craft`, `Mine Warfare Vessels` ) %>%
+  group_by(Country)
+
+masset <- military_assets %>%
+  pivot_longer(-Country, names_to = "mili_assets" , values_to = "Count") %>%
+  group_by(Country)
+
+
+military_units <-   masset %>%
+  select(Country, Count) %>%
+  group_by(Country) %>%
+  mutate(total_count = sum (Count)) %>%
+  select(Country, total_count) %>%
+  filter(row_number(Country) == TRUE ) %>%
+  arrange(desc(total_count))
+  
+  
+
+
+
+strenght <- mimo %>%
+  select(Country, `Total Aircraft Strength`,
+         `Total Helicopter Strength` ) %>%
+  group_by(Country)
+
+tidystrength <- strenght %>%
+  pivot_longer(-Country, names_to = "strength_" , values_to = "total_s") %>%
+  group_by(Country)
+
+
+airpower <-   tidystrength %>%
+  select(Country, total_s) %>%
+  group_by(Country) %>%
+  mutate(total_str = sum (total_s)) %>%
+  select(Country, total_str) %>%
+  filter(row_number(Country) == TRUE ) %>%
+  arrange(desc(total_str))
+
+
+Rocket_Projectors <- mimo %>%
+  select(Country, `Rocket Projectors`) %>%
+  arrange(desc(`Rocket Projectors`))
+
+# : 
+
+
+
+
+irrigation_t %>%
+  group_by(Coun) %>%
+  mutate(total_ = sum (value)) %>%
+  select(year, total_)%>%
+  filter(row_number(year) == TRUE )   
+  
+  
+# : 
+
+
+
+
+energy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 na.omit(mimo)
+
+
+
+
+
 #top ten military Army in terms of  Military personnel , Tanks , etc
 
 
@@ -84,7 +169,8 @@ head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 20) %>%
 
 
 
-##### var and SD (NA removed from results)
+##### var and SDfor total strengt (NA removed from results) :
+
 
 globalaircraftstrength_mean <- mimo %>%
   summarise(avg = sum(`Total Aircraft Strength`)/length(`Total Aircraft Strength`))
@@ -99,18 +185,17 @@ globalaircraftstrength_mean <- sum(gfp_as)/length(gfp_as)
 
 gfp_as_var <- sum((gfp_as - globalaircraftstrength_mean)^2)/(length(gfp_as) - 1)
 var(gfp_as)
-
-
 gfp_as_sd <- sqrt(gfp_as_var)
 sd(gfp_as)
 
 
 
-# weapons per country # !!! < change country in filter > !!!!
+# weapons per country # !!! < change country in filter > !!!! :
+
 
 
 mimo %>%
-  select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Rocket Projectors`, `Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, Submarines, `Patrol Craft`, `Mine Warfare Vessels`) %>%
+  select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Rocket Projectors`, `Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, Submarines, `Patrol Craft`, `Mine Warfare Vessels`, `Total Military Personnel` ,`Active Personnel`, `Reserve Personnel`, ) %>%
   pivot_longer(-Country, names_to = "Weapons" , values_to = "value") %>%
   filter(Country == "Saudi Arabia") %>% 
     ggplot(aes(Weapons, value)) + geom_col() + coord_flip()
@@ -121,7 +206,7 @@ mimo %>%
 
 
 mimo %>% 
-  select(Country, `Total Aircraft Strength`,`Total Helicopter Strength`,`Merchant Marine Strength`) %>%
+  select(Country, `Total Aircraft Strength`,`Total Helicopter Strength`) %>%
   pivot_longer(-Country, names_to = "type", values_to ="strenght" ) %>%
   filter(Country == "Saudi Arabia") %>%
   ggplot(aes(type, strenght)) + geom_col() + coord_flip() 
@@ -147,7 +232,8 @@ mimo %>%
 
 
 
-#### still working on spider plot 
+#### still working on spider plot :
+
 
 
 mimospider <- mimo %>% 
@@ -188,11 +274,6 @@ radarchart( data  , axistype=1 ,
 radarchart(data)
 
 
-#countries that might survive a WW3 ( we only measure the aircraft strength)
-
-mimo %>%
-  select(Country, `Total Aircraft Strength`  ) %>%
-  filter(mimo$`Total Aircraft Strength` > 434)
 
 
   
