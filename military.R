@@ -29,7 +29,6 @@ sd(gfp_as)  #Global SD strenght
 
 
 
-
 defense_budget %>%
   mutate(name = fct_reorder(Country, `Defense Budget`)) %>%
   ggplot( aes(x= name, y = `Defense Budget` )) +
@@ -38,9 +37,22 @@ defense_budget %>%
   xlab("") +
   theme_bw()
  
+as_tibble(mitlitary_units_tidy)  %>%
+  mutate(name = fct_reorder(Country, total_count)) %>%
+  ggplot( aes(x= name, y = total_count )) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
 
-
-
+as_tibble(airpower_) %>%
+  mutate(name = fct_reorder(Country, total_str)) %>%
+  ggplot( aes(x= name, y = total_str )) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+  
 
 
 # Run Code :
@@ -73,7 +85,8 @@ military_units <-   masset %>%
   filter(row_number(Country) == TRUE ) %>%
   arrange(desc(total_count))
   
-  
+mitlitary_units_tidy <- head(military_units[order(military_units$total_count,
+                                  decreasing=TRUE), ], 20)   
 
 
 
@@ -95,6 +108,9 @@ airpower <-   tidystrength %>%
   filter(row_number(Country) == TRUE ) %>%
   arrange(desc(total_str)) 
   
+airpower_ <- head(airpower[order(airpower$total_str,
+                                                  decreasing=TRUE), ], 20)  
+
 
 
 Rocket_Projectors <- mimo %>%
