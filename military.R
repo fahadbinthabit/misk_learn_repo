@@ -25,6 +25,24 @@ var(gfp_as) # Global strength variance
 sd(gfp_as)  #Global SD strenght
 
 
+# plots : 
+
+
+
+
+defense_budget %>%
+  mutate(name = fct_reorder(Country, `Defense Budget`)) %>%
+  ggplot( aes(x= name, y = `Defense Budget` )) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+ 
+
+
+
+
+
 # Run Code :
 
 
@@ -75,7 +93,8 @@ airpower <-   tidystrength %>%
   mutate(total_str = sum (total_s)) %>%
   select(Country, total_str) %>%
   filter(row_number(Country) == TRUE ) %>%
-  arrange(desc(total_str))
+  arrange(desc(total_str)) 
+  
 
 
 Rocket_Projectors <- mimo %>%
