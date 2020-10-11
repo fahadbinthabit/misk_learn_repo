@@ -32,7 +32,7 @@ sd(gfp_as)  #Global SD strenght
 defense_budget %>%
   mutate(name = fct_reorder(Country, `Defense Budget`)) %>%
   ggplot( aes(x= name, y = `Defense Budget` )) +
-  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  geom_bar(stat="identity", fill= "#4b5320" , alpha=.6, width=.4) +
   coord_flip() +
   xlab("") +
   theme_bw()
@@ -40,7 +40,7 @@ defense_budget %>%
 as_tibble(mitlitary_units_tidy)  %>%
   mutate(name = fct_reorder(Country, total_count)) %>%
   ggplot( aes(x= name, y = total_count )) +
-  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  geom_bar(stat="identity", fill="#4b5320", alpha=.6, width=.4) +
   coord_flip() +
   xlab("") +
   theme_bw()
@@ -48,7 +48,7 @@ as_tibble(mitlitary_units_tidy)  %>%
 as_tibble(airpower_) %>%
   mutate(name = fct_reorder(Country, total_str)) %>%
   ggplot( aes(x= name, y = total_str )) +
-  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  geom_bar(stat="identity", fill="#4b5320", alpha=.6, width=.4) +
   coord_flip() +
   xlab("") +
   theme_bw()
@@ -59,10 +59,7 @@ as_tibble(airpower_) %>%
 
 
 defense_budget <- head(mimo[order(mimo$`Defense Budget`,
-                          decreasing=TRUE), ], 20) %>%
-  
-  select(Country,
-         `Defense Budget`)
+                          decreasing=TRUE), ], 20)
 
 
 
@@ -116,6 +113,11 @@ airpower_ <- head(airpower[order(airpower$total_str,
 Rocket_Projectors <- mimo %>%
   select(Country, `Rocket Projectors`) %>%
   arrange(desc(`Rocket Projectors`))
+
+
+
+
+##### var and SDfor total strengt (NA removed from results) :
 
 
 globalaircraftstrength_mean <- mimo %>%
@@ -178,8 +180,6 @@ head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 20) %>%
          `Destroyers`) %>% ggplot(aes(Country,`Destroyers`)) + geom_col() + coord_flip()
 
 
-
-##### var and SDfor total strengt (NA removed from results) :
 
 
 
