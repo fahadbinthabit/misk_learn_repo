@@ -82,16 +82,24 @@ Rocket_Projectors <- mimo %>%
   select(Country, `Rocket Projectors`) %>%
   arrange(desc(`Rocket Projectors`))
 
-# : 
+
+globalaircraftstrength_mean <- mimo %>%
+  summarise(avg = sum(`Total Aircraft Strength`)/length(`Total Aircraft Strength`))
+
+globalaircraftstrength_mean$avg
+
+gfp_as1 <- mimo$`Total Aircraft Strength`[mimo$`Total Aircraft Strength`]
+gfp_as <- na.omit(gfp_as1) 
+
+globalaircraftstrength_mean <- sum(gfp_as)/length(gfp_as)
 
 
+gfp_as_var <- sum((gfp_as - globalaircraftstrength_mean)^2)/(length(gfp_as) - 1)
+var(gfp_as)
+gfp_as_sd <- sqrt(gfp_as_var)
+sd(gfp_as)
 
 
-irrigation_t %>%
-  group_by(Coun) %>%
-  mutate(total_ = sum (value)) %>%
-  select(year, total_)%>%
-  filter(row_number(year) == TRUE )   
 
 #top ten military Army in terms of  Military personnel , Tanks , etc :
 
@@ -139,21 +147,7 @@ head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 20) %>%
 ##### var and SDfor total strengt (NA removed from results) :
 
 
-globalaircraftstrength_mean <- mimo %>%
-  summarise(avg = sum(`Total Aircraft Strength`)/length(`Total Aircraft Strength`))
 
-globalaircraftstrength_mean$avg
-
-gfp_as1 <- mimo$`Total Aircraft Strength`[mimo$`Total Aircraft Strength`]
-gfp_as <- na.omit(gfp_as1) 
-
-globalaircraftstrength_mean <- sum(gfp_as)/length(gfp_as)
-
-
-gfp_as_var <- sum((gfp_as - globalaircraftstrength_mean)^2)/(length(gfp_as) - 1)
-var(gfp_as)
-gfp_as_sd <- sqrt(gfp_as_var)
-sd(gfp_as)
 
 
 
