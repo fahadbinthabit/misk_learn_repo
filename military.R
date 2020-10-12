@@ -3,7 +3,9 @@
 #08.10.2020
 
 
-#packages
+#packages :
+
+
 
 library(tidyverse)
 library(rio)
@@ -12,17 +14,43 @@ library(rio)
 
 # Data set:
 
+
+
+
 mimo1 <- read_csv("GlobalFirePower.csv")
 mimo <- na.omit(mimo1)
 
+
+
+
 # :
 
+
+
+set.seed(99)  numbers
+samples <- rnorm(20)
+hist(samples, main = expression(samples))
+
+
+
+#normal distribution plot ( strength ) :
+
+
+
+histogram <- rnorm(mean = 434.8169, sd = 563.7775, n = 3000)
+hist(histogram, main = expression(paste()))
+
+
+
+#info
 
 defense_budget
 airpower 
 military_units 
 var(gfp_as) # Global strength variance
 sd(gfp_as)  #Global SD strenght
+
+
 
 
 # plots : 
@@ -138,6 +166,14 @@ sd(gfp_as)
 
 
 
+
+
+
+
+
+
+
+
 #top ten military Army in terms of  Military personnel , Tanks , etc :
 
 
@@ -182,10 +218,6 @@ head(mimo[order(mimo$`Destroyers`, decreasing=TRUE), ], 20) %>%
 
 
 
-
-
-
-
 # weapons per country # !!! < change country in filter > !!!! :
 
 
@@ -206,6 +238,7 @@ mimo %>%
   pivot_longer(-Country, names_to = "type", values_to ="strenght" ) %>%
   filter(Country == "Saudi Arabia") %>%
   ggplot(aes(type, strenght)) + geom_col() + coord_flip() 
+
 
 
 
