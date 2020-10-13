@@ -35,10 +35,28 @@ hist(samples, main = expression(samples))
 
 #normal distribution plot ( strength ) :
 
+mean_of_all_means <- mean(xbar$total_str)
+n <- nrow(xbar)
 
 
-histogram <- rnorm(mean = 434.8169, sd = 563.7775, n = 3000)
+x~N(277.16, 912.8507 , n = 133)
+
+histogram <- rnorm(mean = 277.1692
+, sd = 912.8507, n = 133)
 hist(histogram, main = expression(paste()))
+
+
+
+
+
+new_var <- sum((xbar$total_str - mean_of_all_means)^2)/(length(xbar) - 1)
+new_var <- var(xbar)
+sd <- sqrt(new_var)
+sd(gfp_as)
+
+
+
+
 
 
 
@@ -86,8 +104,8 @@ as_tibble(airpower_) %>%
 # Run Code :
 
 
-defense_budget <- head(mimo[order(mimo$`Defense Budget`,
-                          decreasing=TRUE), ], 20)
+defense_budget <- head(mimo[order(mimo$`Defense Budget`)
+                    ])
 
 
 
@@ -120,18 +138,56 @@ strenght <- mimo %>%
          `Total Helicopter Strength` ) %>%
   group_by(Country)
 
-tidystrength <- strenght %>%
+setup_table_4str <- strenght %>%
   pivot_longer(-Country, names_to = "strength_" , values_to = "total_s") %>%
   group_by(Country)
 
 
-airpower <-   tidystrength %>%
+xbar <-   setup_table_4str %>%
   select(Country, total_s) %>%
   group_by(Country) %>%
-  mutate(total_str = sum (total_s)) %>%
+  mutate(total_str = sum ((total_s)/2) ) %>%
   select(Country, total_str) %>%
-  filter(row_number(Country) == TRUE ) %>%
-  arrange(desc(total_str)) 
+  filter(row_number(Country) == TRUE ) 
+
+mean_of_all_means <- mean(xbar$total_str)
+n <- nrow(xbar)
+
+
+  
+
+###### ::::::
+  
+
+
+globalaircraftstrength_mean$avg
+
+gfp_as1 <- mimo$`Total Aircraft Strength`[mimo$`Total Aircraft Strength`]
+gfp_as <- na.omit(gfp_as1) 
+
+globalaircraftstrength_mean <- sum(gfp_as)/length(gfp_as)
+
+
+gfp_as_var <- sum((gfp_as - globalaircraftstrength_mean)^2)/(length(gfp_as) - 1)
+var(gfp_as)
+gfp_as_sd <- sqrt(gfp_as_var)
+sd(gfp_as)
+
+
+  
+  
+  
+  
+  
+  
+  
+###### :::::
+
+
+
+
+
+ 
   
 airpower_ <- head(airpower[order(airpower$total_str,
                                                   decreasing=TRUE), ], 20)  
