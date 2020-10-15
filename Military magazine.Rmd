@@ -1,0 +1,29 @@
+---
+title: "GLOBAL FIREPOWER 2020"
+author: "Fahad BinThabit"
+date: "09/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+mimo <- read_csv("GlobalFirePower.csv")
+
+
+```
+
+## R Markdown
+
+**"War does not determine who is right - only who is left."**
+
+
+```{r echo = FALSE}
+
+
+head(mimo[order(mimo$`Total Military Personnel`, decreasing=TRUE), ], 10) %>%
+  select(Country,
+         `Total Military Personnel`) %>% ggplot(aes(Country,`Total Military Personnel`)) + geom_col() + coord_flip()
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
