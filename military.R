@@ -9,6 +9,7 @@
 
 library(tidyverse)
 library(rio)
+library(tidy)
 
 
 
@@ -41,7 +42,7 @@ n <- nrow(xbar)
 
 x~N(277.16, 912.8507 , n = 133)
 
-histogram <- rnorm(mean = 277.1692
+histogram <- tnorm(mean = 277.1692
 , sd = 912.8507, n = 133)
 hist(histogram, main = expression(paste()))
 
@@ -49,10 +50,17 @@ hist(histogram, main = expression(paste()))
 
 
 
+
+
+t.test(histogram, mu = 15 )
+
+tdistribution 
+
+
 new_var <- sum((xbar$total_str - mean_of_all_means)^2)/(length(xbar) - 1)
 new_var <- var(xbar)
 sd <- sqrt(new_var)
-sd(gfp_as)
+sd(xbar)
 
 
 
@@ -67,8 +75,8 @@ airpower
 military_units 
 var(gfp_as) # Global strength variance
 sd(gfp_as)  #Global SD strenght
-
-
+mimo
+t.test(   ~  )
 
 
 # plots : 
@@ -105,11 +113,11 @@ as_tibble(airpower_) %>%
 
 
 defense_budget <- head(mimo[order(mimo$`Defense Budget`)
-                    ])
-
-
-
-
+                    
+                            
+                            
+                            
+                            
 
 military_assets <- mimo %>%
   select(Country,`Fighter Aircraft`,`Attack Aircraft`,`Transport Aircraft`,`Attack Helicopters`,`Combat Tanks`,`Armored Fighting Vehicles`,`Self-Propelled Artillery`,`Towed Artillery`,`Total Naval Assets`, `Aircraft Carriers`, Frigates, Destroyers, Corvettes, `Rocket Projectors`, Submarines, `Patrol Craft`, `Mine Warfare Vessels` ) %>%
@@ -135,12 +143,14 @@ mitlitary_units_tidy <- head(military_units[order(military_units$total_count,
 
 strenght <- mimo %>%
   select(Country, `Total Aircraft Strength`,
-         `Total Helicopter Strength` ) %>%
+          `Defense Budget` ) %>%
   group_by(Country)
 
 setup_table_4str <- strenght %>%
   pivot_longer(-Country, names_to = "strength_" , values_to = "total_s") %>%
   group_by(Country)
+
+t.test(total_s ~ strenght , data =  setup_table_4str , var.equal = TRUE)
 
 
 xbar <-   setup_table_4str %>%
@@ -171,7 +181,7 @@ globalaircraftstrength_mean <- sum(gfp_as)/length(gfp_as)
 gfp_as_var <- sum((gfp_as - globalaircraftstrength_mean)^2)/(length(gfp_as) - 1)
 var(gfp_as)
 gfp_as_sd <- sqrt(gfp_as_var)
-sd(gfp_as)
+sd(xbar)
 
 
   

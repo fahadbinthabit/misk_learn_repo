@@ -1,0 +1,60 @@
+---
+title: "aggregator performance"
+author: "Fahad BinThabit"
+date: "15/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE )
+library(tidyverse)
+library(rio)
+library(tinytex)
+library(ggplot2)
+library(data.table)
+library(scales)
+main_ = read_csv("tameeni report/arranged data.csv")
+main_ = as.data.table(main_)  
+
+```
+
+### We will determine the relation of errors and late response with the sample data set of aggregator acitivity 
+
+we ploted a linear model to visualize the behavior of errors and late responses with the sample  
+
+```{r aggregator , echo = FALSE}
+
+
+plotit <- ggplot(main_ , aes(x= sample_count , y= Error_Response , col= late_success )) + geom_point() + geom_smooth(method = "lm") 
+
+plotit
+
+```
+
+## error details 
+
+over 90% of the errors are technical , thus the more we get requests the higher the errors are . 
+
+```{r pressure, echo = FALSE}
+error_ = read_csv("tameeni report/error_details .csv")
+error_ = as.data.table(error_)
+
+error_ratio <- error_ %>% 
+  mutate( ratio_ = `Error Count` / 3194 ) %>%
+  select(`Error Message`, ratio_)
+error_ratio = as.data.table(error_ratio)
+
+error_ratio <- head(error_ratio[order(error_ratio$ratio,
+                                 decreasing=TRUE), ], 5) 
+
+percentage <- error_ratio %>% group_by(`Error Message`) 
+
+percentage
+```
+
+The table shows 
+The top 3 errors are "Service error 43%" , "Technical error 30%" & "error in response 17%" and they sum to 
+43.2% + 30.4% + 17.4% = 91%
+
+
+
