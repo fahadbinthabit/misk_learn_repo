@@ -24,4 +24,11 @@ summary(fit)
 
 ggplot(main_ , aes(x= Error_Response , y=sample_count )) + geom_point() + geom_smooth(method = "lm")  
 
+error_ = read_csv("tameeni report/error_details .csv")
+error_ = as.data.table(main_)
+
+error_ %>% group_by(`Error Message`) %>%
+  mutate(ratio = `Error Count`/nrow(count()))
+
+
 
