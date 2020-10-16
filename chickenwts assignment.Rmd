@@ -72,6 +72,6 @@ Tukey’s Post-hoc test:
 ## Tukey’s Post-hoc test
 chickwts.av <- aov(weight ~ feed, data = chickwts)
 tukeyTest <- TukeyHSD(chickwts.av)
-datatable(tukeyTest$feed)
+datatable(tukeyTest$feed )
 ```
 
