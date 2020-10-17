@@ -15,6 +15,7 @@ options(digits = 7)
 library(tidyverse)
 library(rio)
 library(DT)
+library(data.table)
 
 
 
@@ -33,25 +34,61 @@ martian <- as.data.table(martian)
 
 
 
-```{r}
+**INDEX**
 
 
-```
-
-
-
-
-## Two-sample t-tests
-
-What is the null hypothesis? Remember, this is the thing that is most boring, the thing that you want to reject!
+|                 |                                                           |
+|-----------------|-----------------------------------------------------------|
+|insurer          |insurance company                                          |
+|integration      |the integration between the insrurer and the aggregator    |
+|portal           |Aggregator website                                         |
+|-----------------|-----------------------------------------------------------|
 
 
 
-```{r}
+**The aggregator**
 
-meanlateweek1 <- martian %>%
+Motor insurance aggregators has been leading the market lately , they have became the main portal for retails customers.
+
+
+Every day we measure the performance of the insurer response to integration requests made through aggregator portal.
+
+we will measurement the following variables describing the total number of requests:
+
+-success
+-late but success
+-error
+
+**The Samples**
+
+every week is a sample, and the figures showed that the late but success variable has relation with the number of requests and that error variable does not have relation with the number of requests.
+
+
+this is kind of confusing, however will look into our data, but before will we will calculate a three month average for all the requests using the variables 
+
+
+|  type of average  measured in 3month        |  count |Ratio    |
+|---------------------------------------------|--------|---------|
+|number of requests                           |27670   |100%     |
+|avg number of success                        |5651    |20%      |
+|avg number of late but success               |11545   |42%      |
+|avg number of errors                         |10473   |38%      | 
+|---------------------------------------------|--------|---------|
+
+```{r  , echo = FALSE}
+
+meanlateweek2 <- martian %>%
   filter(date == "week 2") %>%
   mutate( meanlate =  mean(late_success) )
+
+meanlateweek1 <- martian %>%
+  filter(date == "week 1") %>%
+  mutate( meanlate =  mean(late_success) )
+
+meanlateweek3 <- martian %>%
+  filter(date == "week 3") %>%
+  mutate( meanlate =  mean(late_success) )
+
 
 meanlateweek1 <- as.data.table(meanlateweek1)
 
@@ -98,35 +135,44 @@ finaleratio <- finale %>%
            meansuccratio = meansuccess/meansample) 
 
 
-finaleratio %>% select(meanlateratio, meanerroratio, meansuccratio) %>%
- select( , 1)
 
 
 ```
 
+**The first observation** 
+
+We will  view the behavior of late but success and error reponses with the number of requests using the a linear model method 
+
+```{r aggregator , echo = FALSE}
 
 
+plotit <- ggplot(martian , aes(x=late_success  , y= sample_count , col= Error_Response )) + geom_point() + geom_smooth(method = "lm") 
+
+plotit
+
+```
+
+if you notice there is a relation in the model between variables , we will dive deeper and identify which variable is more likely to have relation with the total number of requests "in business it is called **web traffic** .
 
 
+**Correlations**
 
-$\bar{x}_{Site I} = 200$
 
-$\bar{x}_{Site II} = 210$
-
-Previously, $H_0: \mu = 195cm$. Now... $H_0: \mu_{site I} - \mu_{site II} = 0$. i.e. if X does not predict Y, what do you expect to see?
-
-This is what I'd see if there was NO relationship, i.e. X doesn't matter.
 
 ```{r}
 ggplot(martian, aes(x = 1, y = "late_success")) +
   geom_jitter(width = 0.2) +
   coord_cartesian(xlim = c(0,2)) +
-  labs(title = "No information from X at all")
+  labs(title = "when No information from where late but success is behaving")
 
 ```
 
+
+
+
+
 ```{r}
-ggplot(martian, aes(x = "sample_count", y = "late_success" )) +
+ggplot(martian, aes(x = "late_success", y = "sample_count" )) +
   geom_jitter(width = 0.2) +
   coord_cartesian() +
   labs(title = "ALL information from X that is available")
@@ -134,52 +180,41 @@ ggplot(martian, aes(x = "sample_count", y = "late_success" )) +
 
 Our observed value must contain:
 
-- $\bar{x}_{Site I} = 200$, and
-- $\bar{x}_{Site II} = 210$
+- $\bar{latebutsuccess}_{week1} = 8971$  and,
+- $\bar{latebutsuccess}_{week2} = 10373$ and,
+- $\bar{latebutsuccess}_{week3} = 11503$
+
+$\bar{latebutsuccess}_{week 1} - \bar{latebutsuccess}_{week2} = -1402$
 
 
-$\bar{x}_{Site I} - \bar{x}_{Site II}$
-
-```{r}
-# Default welch's variant:
-#t.test(Error_Response ~ date, data = martian)
-#(1 - pt(q = 3.7291, df = 18)) * 2
 
 ```
 
-The p-value is 0.001536. What does this tell me?
+The p-value is 0.001663. What does this tell me?
 
 - We reject the null hypothesis!
-- There is evidence that the location (site) is related to the height.
-- There is an association between height and site.
-- We can use the location to predict height!
+- There is evidence that the number of requests of week 1(date) is related to the late but success.
+- There is an association between late but success and number of requests.
+- We can use the number of requests to predict the late but success responses!
 
-Avoid saying "causes" or "influences" and also we're not quite ready for correlation yet.
 
-```{r}
-# Regular, assuming equal variant
-#t.test(Error_Response ~ date, data = martian, #var.equal = TRUE)
-```
-
-## Linear regression
-
-Our data:
+***Our data***
 
 ```{r}
 
-week_errors_mean <- mean(martian$late_success[martian$date == "week 1"])
+week_latesuccess_mean <- mean(martian$late_success[martian$date == "week 1"])
 martian %>% 
   filter(date == "week 1") %>% 
   ggplot(aes(x = 1, y = late_success)) +
   geom_jitter(width = 0.2) +
-  geom_hline(aes(yintercept = week_errors_mean)) +
+  geom_hline(aes(yintercept = week_latesuccess_mean)) +
   coord_cartesian(xlim = c(0,2)) +
   labs(title = "No information from X at all")
 ```
 
 
 
-What about the height?
+What about the late but success responses 
 
 
 ```{r SpeedHeight}
@@ -191,11 +226,7 @@ martian %>%
   labs(title = "ALL information from X (sample_count)")
 ```
 
-Bofore we do any analysis, we can already guess that height is a good predictor of speed, since a lot of points are closer to the line than mean given the mean of speed alone (i.e. the Null model taking no X into account.)
-
-Can we imagine a variable that would NOT predict speed?
-
-BMI doesn't look as good :/
+error and success doesn't look as good :/
 
 
 ```{r SpeedBMI}
@@ -218,36 +249,37 @@ martian %>%
   labs(title = "ALL information from X (Eye score)")
 ```
 
-#### Return to Mars
+
 
 Let's look at our models:
+
+late_success ~ Error_Response
+
 ```{r}
 error_resp_late_lm <- lm(late_success ~ Error_Response, data = martian[martian$date == "week 1",])
 summary(error_resp_late_lm)
 ```
+
+success ~ late_success
+
 
 ```{r}
 error_resp_success_lm <- lm(success ~ late_success, data = martian[martian$date == "week 1",])
 summary(error_resp_success_lm)
 ```
 
+late_success ~ sample_count
 
 ```{r}
 error_resp_latesuccess_lm <- lm(late_success ~ sample_count, data = martian[martian$date == "week 1",])
 summary(error_resp_latesuccess_lm)
 ```
 
+Error_Response ~ sample_count
+
 ```{r}
 error_resp_sc_lm <- lm(Error_Response ~ sample_count, data = martian[martian$date == "week 1",])
 summary(error_resp_sc_lm)
 ```
 
-
-
-The $\hat{\beta_1}$ of this model is -0.441, which tells us that for every 1 unit (i.e. cm) increase in height, the Martian will run the 100 meters 0.45 seconds faster. i.e. $\frac{rise}{run} = \frac{(y_2 - y_1 )}{(x_2- x_1)} = \frac{\Delta{y}}{\Delta{x}}$ where $\Delta{x}$ = 1 unit. How much does y change for a 1 unit increase in x?
-
-But BMI and Eye sight score do not predict the speed result:
-
-
-```
 
