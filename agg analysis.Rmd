@@ -1,6 +1,6 @@
 ---
 title: "Aggregator analysis"
-author: "Fahad BinThabit"
+author: "Online sales report"
 date: "17/10/2020"
 output:
   html_document: default
@@ -15,6 +15,7 @@ library(tidyverse)
 library(rio)
 library(DT)
 library(data.table)
+library(kableExtra)
 
 aggr_main <- read_csv("tameeni report/arranged data.csv")
 
@@ -22,49 +23,8 @@ aggr_main <- read_csv("tameeni report/arranged data.csv")
 
 ```
 
+**Performance report**
 
-
-**INDEX**
-
-
-
-```datatable()
-                                                                             
-|-----------------|------------------------------------------------------------|
-|insurer          |insurance company                                           |
-|integration      |the integration between the insrurer and the aggregator     |
-|portal           |Aggregator website                                          |
-|-----------------|------------------------------------------------------------|
-
-```
-
-
-**The aggregator**
-
-Motor insurance aggregators has been leading the market lately , they have 
-became the main portal for retails customers.
-
-
-Every day we measure the performance of the insurer response to integration 
-requests made through aggregator portal.
-
-we will measurement the following variables describing the total number of 
-requests:
-
--success
--late but success
--error
-
-**The Samples**
-
-every week is a sample, and the figures showed that the late but success 
-variable has relation with the number of requests and that error variable 
-does not have relation with the number of requests.
-
-
-this is kind of confusing, however will look into our data, but before will
-we will calculate a three month average for all the requests using the 
-variables 
 
 
 |Average responses measured in 3 month period               |  count |Ratio    |
@@ -74,6 +34,35 @@ variables
 |avg number of late but success                             |11545   |42%      |
 |avg number of errors                                       |10473   |38%      | 
 |-----------------------------------------------------------|--------|---------|
+
+
+
+##how errors are distributed 
+
+Below are top 5 errors showed in percentatge of total errors
+
+```{r}
+error_ = read_csv("tameeni report/error_details .csv")
+error_ = as.data.table(error_)
+
+error_ratio <- error_ %>% 
+  mutate( error_percentage = `Error Count`/ 3194 ) %>%
+  select(`Error Message`, error_percentage)
+error_ratio = as.data.table(error_ratio)
+
+error_ratio_ <- head(error_ratio[order(error_ratio$error_percentage,
+                                 decreasing=TRUE), ], 5) 
+
+percentage <- error_ratio_ %>% group_by(`Error Message`)
+  
+
+kable(percentage)
+```
+
+
+
+
+
 
 ```{r  , echo = FALSE}
 meanlateweek2 <- aggr_main %>%
@@ -182,13 +171,21 @@ aggr_main %>%
 
 ##What does this tell me?
 
-- There is an evidence that the number of requests increase when the number of 
-late responses increase , which means that the late responses are not related 
-to connectivity factor and that we have a problem in processing the 
-information.
+- There is an evidence that the number of requests increase when the number of late responses increase , which means that the late responses are not related  to **connectivity factor** and that we have a problem in processing the information. 
 - There is an association between late but success and number of requests.
 - We can use the number of requests to predict the 
 late but success responses and vice versa. 
+
+
+
+
+
+
+
+
+
+
+...
 
 
 
