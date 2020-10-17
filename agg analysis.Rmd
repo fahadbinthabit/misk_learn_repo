@@ -1,0 +1,253 @@
+---
+title: "aggregator new analytics"
+author: "Fahad BinThabit"
+date: "17/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, echo = FALSE)
+options(digits = 7)
+```
+
+```{r}
+# Load packages
+library(tidyverse)
+library(rio)
+library(DT)
+
+
+
+# Read in the data
+martian <- read_csv("tameeni report/arranged data.csv")
+martian <- as.data.table(martian)
+
+
+
+# # Data
+# martian_siteI <- martian$Height[martian$Site == "Site I"]
+# 
+# # p-value is 0.027
+# t.test(martian_siteI, mu = hypo_A, paired = FALSE)
+```
+
+
+
+```{r}
+
+
+```
+
+
+
+
+## Two-sample t-tests
+
+What is the null hypothesis? Remember, this is the thing that is most boring, the thing that you want to reject!
+
+
+
+```{r}
+
+meanlateweek1 <- martian %>%
+  filter(date == "week 2") %>%
+  mutate( meanlate =  mean(late_success) )
+
+meanlateweek1 <- as.data.table(meanlateweek1)
+
+meanlateallweeks <- martian %>%
+    mutate( meanlate =  mean(late_success) ) %>%
+  select(sample_count,meanlate)
+
+
+meanerrorallweeks <- martian %>%
+    mutate( meanerr =  mean(Error_Response) ) %>%
+  select(sample_count,meanerr)
+
+meansuccessallweeks <- martian %>%
+    mutate( meansuccess =  mean(success) ) %>%
+  select(sample_count,meansuccess)
+
+meanlateallweeks <- as.data.table(meanlateallweeks)
+
+meansamplecount <- martian %>%
+    mutate( meansample =  mean(sample_count) ) %>%
+  select(sample_count, meansample)
+
+meansamplecount <- as.data.table(meansamplecount)
+
+
+
+propmeanlatesample <- merge(meanlateallweeks,meansamplecount, by = "sample_count")
+
+propmeanlatesampleall <- merge(propmeanlatesample, meansuccessallweeks, by = "sample_count")
+
+finalmeantable <- merge(propmeanlatesampleall, meanerrorallweeks, by = "sample_count" )
+
+finalmeantable <- as.data.table(finalmeantable)
+
+finale <- finalmeantable %>%
+  select( meansample, meanlate , meansuccess, meanerr   )
+
+
+finale <- as.data.table(finale)
+
+finaleratio <- finale %>%
+    mutate(meanlateratio = meanlate/meansample,
+           meanerroratio = meanerr/meansample,
+           meansuccratio = meansuccess/meansample) 
+
+
+finaleratio %>% select(meanlateratio, meanerroratio, meansuccratio) %>%
+ select( , 1)
+
+
+```
+
+
+
+
+
+
+$\bar{x}_{Site I} = 200$
+
+$\bar{x}_{Site II} = 210$
+
+Previously, $H_0: \mu = 195cm$. Now... $H_0: \mu_{site I} - \mu_{site II} = 0$. i.e. if X does not predict Y, what do you expect to see?
+
+This is what I'd see if there was NO relationship, i.e. X doesn't matter.
+
+```{r}
+ggplot(martian, aes(x = 1, y = "late_success")) +
+  geom_jitter(width = 0.2) +
+  coord_cartesian(xlim = c(0,2)) +
+  labs(title = "No information from X at all")
+
+```
+
+```{r}
+ggplot(martian, aes(x = "sample_count", y = "late_success" )) +
+  geom_jitter(width = 0.2) +
+  coord_cartesian() +
+  labs(title = "ALL information from X that is available")
+```
+
+Our observed value must contain:
+
+- $\bar{x}_{Site I} = 200$, and
+- $\bar{x}_{Site II} = 210$
+
+
+$\bar{x}_{Site I} - \bar{x}_{Site II}$
+
+```{r}
+# Default welch's variant:
+#t.test(Error_Response ~ date, data = martian)
+#(1 - pt(q = 3.7291, df = 18)) * 2
+
+```
+
+The p-value is 0.001536. What does this tell me?
+
+- We reject the null hypothesis!
+- There is evidence that the location (site) is related to the height.
+- There is an association between height and site.
+- We can use the location to predict height!
+
+Avoid saying "causes" or "influences" and also we're not quite ready for correlation yet.
+
+```{r}
+# Regular, assuming equal variant
+#t.test(Error_Response ~ date, data = martian, #var.equal = TRUE)
+```
+
+## Linear regression
+
+Our data:
+
+```{r}
+
+week_errors_mean <- mean(martian$late_success[martian$date == "week 1"])
+martian %>% 
+  filter(date == "week 1") %>% 
+  ggplot(aes(x = 1, y = late_success)) +
+  geom_jitter(width = 0.2) +
+  geom_hline(aes(yintercept = week_errors_mean)) +
+  coord_cartesian(xlim = c(0,2)) +
+  labs(title = "No information from X at all")
+```
+
+
+
+What about the height?
+
+
+```{r SpeedHeight}
+martian %>% 
+  filter(date == "week 1") %>% 
+  ggplot(aes(x = sample_count, y = late_success)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "ALL information from X (sample_count)")
+```
+
+Bofore we do any analysis, we can already guess that height is a good predictor of speed, since a lot of points are closer to the line than mean given the mean of speed alone (i.e. the Null model taking no X into account.)
+
+Can we imagine a variable that would NOT predict speed?
+
+BMI doesn't look as good :/
+
+
+```{r SpeedBMI}
+martian %>% 
+  filter(date == "week 1") %>% 
+  ggplot(aes(x = sample_count, y = Error_Response)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "ALL information from X (BMI)")
+```
+
+Eye score looks even worse :/
+
+```{r SpeedEye}
+martian %>% 
+  filter(date == "week 1") %>% 
+  ggplot(aes(x = sample_count, y = success )) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "ALL information from X (Eye score)")
+```
+
+#### Return to Mars
+
+Let's look at our models:
+```{r}
+error_resp_late_lm <- lm(late_success ~ Error_Response, data = martian[martian$date == "week 1",])
+summary(error_resp_late_lm)
+```
+
+```{r}
+error_resp_success_lm <- lm(success ~ late_success, data = martian[martian$date == "week 1",])
+summary(error_resp_success_lm)
+```
+
+
+```{r}
+error_resp_latesuccess_lm <- lm(late_success ~ sample_count, data = martian[martian$date == "week 1",])
+summary(error_resp_latesuccess_lm)
+```
+
+```{r}
+error_resp_sc_lm <- lm(Error_Response ~ sample_count, data = martian[martian$date == "week 1",])
+summary(error_resp_sc_lm)
+```
+
+
+
+The $\hat{\beta_1}$ of this model is -0.441, which tells us that for every 1 unit (i.e. cm) increase in height, the Martian will run the 100 meters 0.45 seconds faster. i.e. $\frac{rise}{run} = \frac{(y_2 - y_1 )}{(x_2- x_1)} = \frac{\Delta{y}}{\Delta{x}}$ where $\Delta{x}$ = 1 unit. How much does y change for a 1 unit increase in x?
+
+But BMI and Eye sight score do not predict the speed result:
+
+
+```
+
