@@ -1,37 +1,25 @@
 ---
-title: "aggregator new analytics"
+title: "Aggregator analysis"
 author: "Fahad BinThabit"
 date: "17/10/2020"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, echo = FALSE)
 options(digits = 7)
-```
-
-```{r}
-# Load packages
+library(tinytex)
 library(tidyverse)
 library(rio)
 library(DT)
 library(data.table)
 
-
-
-# Read in the data
-martian <- read_csv("tameeni report/arranged data.csv")
-martian <- as.data.table(martian)
+aggr_main <- read_csv("tameeni report/arranged data.csv")
 
 
 
-# # Data
-# martian_siteI <- martian$Height[martian$Site == "Site I"]
-# 
-# # p-value is 0.027
-# t.test(martian_siteI, mu = hypo_A, paired = FALSE)
 ```
 
 
@@ -39,23 +27,29 @@ martian <- as.data.table(martian)
 **INDEX**
 
 
-|                 |                                                           |
-|-----------------|-----------------------------------------------------------|
-|insurer          |insurance company                                          |
-|integration      |the integration between the insrurer and the aggregator    |
-|portal           |Aggregator website                                         |
-|-----------------|-----------------------------------------------------------|
 
+```datatable()
+                                                                             
+|-----------------|------------------------------------------------------------|
+|insurer          |insurance company                                           |
+|integration      |the integration between the insrurer and the aggregator     |
+|portal           |Aggregator website                                          |
+|-----------------|------------------------------------------------------------|
+
+```
 
 
 **The aggregator**
 
-Motor insurance aggregators has been leading the market lately , they have became the main portal for retails customers.
+Motor insurance aggregators has been leading the market lately , they have 
+became the main portal for retails customers.
 
 
-Every day we measure the performance of the insurer response to integration requests made through aggregator portal.
+Every day we measure the performance of the insurer response to integration 
+requests made through aggregator portal.
 
-we will measurement the following variables describing the total number of requests:
+we will measurement the following variables describing the total number of 
+requests:
 
 -success
 -late but success
@@ -63,73 +57,73 @@ we will measurement the following variables describing the total number of reque
 
 **The Samples**
 
-every week is a sample, and the figures showed that the late but success variable has relation with the number of requests and that error variable does not have relation with the number of requests.
+every week is a sample, and the figures showed that the late but success 
+variable has relation with the number of requests and that error variable 
+does not have relation with the number of requests.
 
 
-this is kind of confusing, however will look into our data, but before will we will calculate a three month average for all the requests using the variables 
+this is kind of confusing, however will look into our data, but before will
+we will calculate a three month average for all the requests using the 
+variables 
 
 
-|  type of average  measured in 3month        |  count |Ratio    |
-|---------------------------------------------|--------|---------|
-|number of requests                           |27670   |100%     |
-|avg number of success                        |5651    |20%      |
-|avg number of late but success               |11545   |42%      |
-|avg number of errors                         |10473   |38%      | 
-|---------------------------------------------|--------|---------|
+|Average responses measured in 3 month period               |  count |Ratio    |
+|-----------------------------------------------------------|--------|---------|
+|number of requests                                         |27670   |100%     |
+|avg number of success                                      |5651    |20%      |
+|avg number of late but success                             |11545   |42%      |
+|avg number of errors                                       |10473   |38%      | 
+|-----------------------------------------------------------|--------|---------|
 
 ```{r  , echo = FALSE}
-
-meanlateweek2 <- martian %>%
+meanlateweek2 <- aggr_main %>%
   filter(date == "week 2") %>%
   mutate( meanlate =  mean(late_success) )
 
-meanlateweek1 <- martian %>%
+meanlateweek1 <- aggr_main %>%
   filter(date == "week 1") %>%
   mutate( meanlate =  mean(late_success) )
 
-meanlateweek3 <- martian %>%
+meanlateweek3 <- aggr_main %>%
   filter(date == "week 3") %>%
   mutate( meanlate =  mean(late_success) )
 
 
-meanlateweek1 <- as.data.table(meanlateweek1)
-
-meanlateallweeks <- martian %>%
+meanlateallweeks <- aggr_main %>%
     mutate( meanlate =  mean(late_success) ) %>%
   select(sample_count,meanlate)
 
 
-meanerrorallweeks <- martian %>%
+meanerrorallweeks <- aggr_main %>%
     mutate( meanerr =  mean(Error_Response) ) %>%
   select(sample_count,meanerr)
 
-meansuccessallweeks <- martian %>%
+meansuccessallweeks <- aggr_main %>%
     mutate( meansuccess =  mean(success) ) %>%
   select(sample_count,meansuccess)
 
-meanlateallweeks <- as.data.table(meanlateallweeks)
 
-meansamplecount <- martian %>%
+meansamplecount <- aggr_main %>%
     mutate( meansample =  mean(sample_count) ) %>%
   select(sample_count, meansample)
 
-meansamplecount <- as.data.table(meansamplecount)
 
 
 
-propmeanlatesample <- merge(meanlateallweeks,meansamplecount, by = "sample_count")
+propmeanlatesample <- merge(meanlateallweeks,meansamplecount,
+                            by = "sample_count")
 
-propmeanlatesampleall <- merge(propmeanlatesample, meansuccessallweeks, by = "sample_count")
+propmeanlatesampleall <- merge(propmeanlatesample, meansuccessallweeks,
+                               by = "sample_count")
 
-finalmeantable <- merge(propmeanlatesampleall, meanerrorallweeks, by = "sample_count" )
+finalmeantable <- merge(propmeanlatesampleall, meanerrorallweeks,
+                        by = "sample_count" )
 
 finalmeantable <- as.data.table(finalmeantable)
 
 finale <- finalmeantable %>%
   select( meansample, meanlate , meansuccess, meanerr   )
 
-
-finale <- as.data.table(finale)
 
 finaleratio <- finale %>%
     mutate(meanlateratio = meanlate/meansample,
@@ -143,119 +137,58 @@ finaleratio <- finale %>%
 
 **The first observation** 
 
-We will  view the behavior of late but success and error reponses with the number of requests using the a linear model method 
+We will  view the behavior of late but success and error reponses with 
+the number of requests using the a linear model method 
 
 ```{r aggregator , echo = FALSE}
 
 
-plotit <- ggplot(martian , aes(x=late_success  , y= sample_count , col= Error_Response )) + geom_point() + geom_smooth(method = "lm") 
+plotit <- ggplot(aggr_main , aes(x=late_success  , y= sample_count ,
+                               col= Error_Response )) + geom_point() +
+  geom_smooth(method = "lm") 
 
 plotit
 
 ```
 
-if you notice there is a relation in the model between variables , we will dive deeper and identify which variable is more likely to have relation with the total number of requests "in business it is called **web traffic** .
-
-
-**Correlations**
-
-
-
-```{r}
-ggplot(martian, aes(x = 1, y = "late_success")) +
-  geom_jitter(width = 0.2) +
-  coord_cartesian(xlim = c(0,2)) +
-  labs(title = "when No information from where late but success is behaving")
-
-```
-
-
-
-
-
-```{r}
-ggplot(martian, aes(x = "late_success", y = "sample_count" )) +
-  geom_jitter(width = 0.2) +
-  coord_cartesian() +
-  labs(title = "ALL information from X that is available")
-```
-
-
-The p-value is 0.001663. What does this tell me?
-
-- There is evidence that the number of requests of week 1(date) is related to the late but success.
-- There is an association between late but success and number of requests.
-- We can use the number of requests to predict the late but success responses!
-
+if you notice there is a relation in the model between variables , 
+we will dive deeper and identify which variable is more likely to have relation with the total number of requests this to prove that the late responses are not related to connectivity but instead it is related to system processing 
 
 **What about the late but success responses** 
 
 
-```{r SpeedHeight}
-martian %>% 
+```{r late_success}
+aggr_main %>% 
   filter(date == "week 1") %>% 
   ggplot(aes(x = sample_count, y = late_success)) +
   geom_point() +
   geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(title = "ALL information from X (sample_count)")
+  labs(title = "how late_success behave with total requests")
   
   
 ```
 
-error and success doesn't look as good :/
 
-
-```{r SpeedBMI}
-martian %>% 
-  filter(date == "week 1") %>% 
-  ggplot(aes(x = sample_count, y = Error_Response)) +
-  geom_point() +
-  geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(title = "ALL information from X (Error_Response)")
-```
-
-Eye score looks even worse :/
-
-```{r SpeedEye}
-martian %>% 
+```{r success}
+aggr_main %>% 
   filter(date == "week 1") %>% 
   ggplot(aes(x = sample_count, y = success )) +
   geom_point() +
   geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(title = "ALL information from X (Eye score)")
+  labs(title = "how success behave with total requests")
 ```
 
 
 
-Let's look at our models:
+##What does this tell me?
 
-late_success ~ Error_Response
+- There is an evidence that the number of requests increase when the number of 
+late responses increase , which means that the late responses are not related 
+to connectivity factor and that we have a problem in processing the 
+information.
+- There is an association between late but success and number of requests.
+- We can use the number of requests to predict the 
+late but success responses and vice versa. 
 
-```{r}
-error_resp_late_lm <- lm(late_success ~ Error_Response, data = martian[martian$date == "week 1",])
-summary(error_resp_late_lm)
-```
-
-success ~ late_success
-
-
-```{r}
-error_resp_success_lm <- lm(success ~ late_success, data = martian[martian$date == "week 1",])
-summary(error_resp_success_lm)
-```
-
-late_success ~ sample_count
-
-```{r}
-error_resp_latesuccess_lm <- lm(late_success ~ sample_count, data = martian[martian$date == "week 1",])
-summary(error_resp_latesuccess_lm)
-```
-
-Error_Response ~ sample_count
-
-```{r}
-error_resp_sc_lm <- lm(Error_Response ~ sample_count, data = martian[martian$date == "week 1",])
-summary(error_resp_sc_lm)
-```
 
 
