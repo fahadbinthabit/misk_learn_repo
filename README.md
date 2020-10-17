@@ -1,6 +1,6 @@
 # The repo hold three statistical observations 
 
-1- "first rmarkdown.rmd" which is an analysis of the relation of the response behavior of the insurer with the insurance agreggator 
+1- "agg analysis.rmd" is an analysis of the relation of the response behavior of the insurer with the insurance agreggator 
 
 2- "military magazine.rmd" & "Military.R are observations for Global fire power 
 
