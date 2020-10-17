@@ -2,7 +2,9 @@
 title: "aggregator new analytics"
 author: "Fahad BinThabit"
 date: "17/10/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -178,43 +180,15 @@ ggplot(martian, aes(x = "late_success", y = "sample_count" )) +
   labs(title = "ALL information from X that is available")
 ```
 
-Our observed value must contain:
-
-- $\bar{latebutsuccess}_{week1} = 8971$  and,
-- $\bar{latebutsuccess}_{week2} = 10373$ and,
-- $\bar{latebutsuccess}_{week3} = 11503$
-
-$\bar{latebutsuccess}_{week 1} - \bar{latebutsuccess}_{week2} = -1402$
-
-
-
-```
 
 The p-value is 0.001663. What does this tell me?
 
-- We reject the null hypothesis!
 - There is evidence that the number of requests of week 1(date) is related to the late but success.
 - There is an association between late but success and number of requests.
 - We can use the number of requests to predict the late but success responses!
 
 
-***Our data***
-
-```{r}
-
-week_latesuccess_mean <- mean(martian$late_success[martian$date == "week 1"])
-martian %>% 
-  filter(date == "week 1") %>% 
-  ggplot(aes(x = 1, y = late_success)) +
-  geom_jitter(width = 0.2) +
-  geom_hline(aes(yintercept = week_latesuccess_mean)) +
-  coord_cartesian(xlim = c(0,2)) +
-  labs(title = "No information from X at all")
-```
-
-
-
-What about the late but success responses 
+**What about the late but success responses** 
 
 
 ```{r SpeedHeight}
@@ -224,6 +198,8 @@ martian %>%
   geom_point() +
   geom_smooth(method = "lm", color = "red", se = FALSE) +
   labs(title = "ALL information from X (sample_count)")
+  
+  
 ```
 
 error and success doesn't look as good :/
@@ -235,7 +211,7 @@ martian %>%
   ggplot(aes(x = sample_count, y = Error_Response)) +
   geom_point() +
   geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(title = "ALL information from X (BMI)")
+  labs(title = "ALL information from X (Error_Response)")
 ```
 
 Eye score looks even worse :/
