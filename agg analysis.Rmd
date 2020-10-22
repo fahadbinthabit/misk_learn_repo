@@ -41,26 +41,11 @@ aggr_summary <- aggr_main %>%
   arrange(name) %>% 
   mutate(Percentage = (Avg/Avg[name == "Total number of requests"]) * 100)
 
-
-# myF <- c("B", "A", "C")
-
-# factor(myF, levels = c("A", "B", "C"), labels = c("Apple", "Bar", "Cat"))
-
 aggr_summary %>%
   kable()
 ```
 
-
-|Average responses measured in 3 month period               |  count |Ratio    |
-|-----------------------------------------------------------|--------|---------|
-|number of requests                                         |27670   | 100%     |
-|avg number of success                                                  |5651    | 20%      |
-|avg number of late but success  (late_success)                           |11545   | 42%      |
-|avg number of errors                                       |10473   | 38%      | 
-
-
-
-##how errors are distributed 
+## How errors are distributed 
 
 Below are top 5 errors showed in percentatge of total errors
 
@@ -77,7 +62,6 @@ error_ratio_ <- head(error_ratio[order(error_ratio$error_percentage,
                                        decreasing=TRUE), ], 5) 
 
 percentage <- error_ratio_ %>% group_by(`Error Message`)
-
 
 kable(percentage)
 ```
