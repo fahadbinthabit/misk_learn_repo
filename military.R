@@ -9,7 +9,7 @@
 
 library(tidyverse)
 library(rio)
-library(tidy)
+
 
 
 
@@ -18,9 +18,12 @@ library(tidy)
 
 
 
-mimo1 <- read_csv("GlobalFirePower.csv")
-mimo <- na.omit(mimo1)
+mimo <- read_csv("GlobalFirePower.csv")
+mimo <- na.omit(mimo)
 
+
+
+g <- ggplot(aes(x= Counntry, y = ))
 
 
 
@@ -85,8 +88,8 @@ t.test(   ~  )
 
 defense_budget %>%
   mutate(name = fct_reorder(Country, `Defense Budget`)) %>%
-  ggplot( aes(x= name, y = `Defense Budget` )) +
-  geom_bar(stat="identity", fill= "#4b5320" , alpha=.6, width=.4) +
+  ggplot( aes(x= name, y = `Defense Budget`, col = Country  )) +
+  geom_jitter(stat="identity", fill= "#4b5320" , alpha=.4, width=2 , show.legend = FALSE) +
   coord_flip() +
   xlab("") +
   theme_bw()
@@ -112,7 +115,9 @@ as_tibble(airpower_) %>%
 # Run Code :
 
 
-defense_budget <- head(mimo[order(mimo$`Defense Budget`)
+defense_budget <- mimo %>%
+  group_by(Country) %>%
+  select(Country, `Defense Budget`)
                     
                             
                             
