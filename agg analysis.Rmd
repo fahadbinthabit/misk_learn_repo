@@ -8,8 +8,11 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, echo = FALSE)
+
 options(digits = 7)
+
 library(tinytex)
 library(tidyverse)
 library(rio)
@@ -19,21 +22,41 @@ library(kableExtra)
 
 aggr_main <- read_csv("tameeni report/arranged data.csv")
 
-
-
 ```
 
 **Performance report**
 
 
+```{r}
+aggr_summary <- aggr_main %>% 
+  filter(date != "Sample1") %>% 
+  group_by(date) %>% 
+  pivot_longer(-date) %>% 
+  group_by(name) %>% 
+  summarise(Avg = round(mean(value))) %>% 
+  mutate(name = factor(name, 
+                       levels = c("Error_Response", "late_success", "success", "sample_count"), 
+                       labels = c("Avg number of errors", "Avg number of late but success", 
+                                  "Avg number of success", "Total number of requests"))) %>% 
+  arrange(name) %>% 
+  mutate(Percentage = (Avg/Avg[name == "Total number of requests"]) * 100)
+
+
+# myF <- c("B", "A", "C")
+
+# factor(myF, levels = c("A", "B", "C"), labels = c("Apple", "Bar", "Cat"))
+
+aggr_summary %>%
+  kable()
+```
+
 
 |Average responses measured in 3 month period               |  count |Ratio    |
 |-----------------------------------------------------------|--------|---------|
-|number of requests                                         |27670   |100%     |
-|avg number of success                                      |5651    |20%      |
-|avg number of late but success                             |11545   |42%      |
-|avg number of errors                                       |10473   |38%      | 
-|-----------------------------------------------------------|--------|---------|
+|number of requests                                         |27670   | 100%     |
+|avg number of success                                                  |5651    | 20%      |
+|avg number of late but success  (late_success)                           |11545   | 42%      |
+|avg number of errors                                       |10473   | 38%      | 
 
 
 
@@ -51,10 +74,10 @@ error_ratio <- error_ %>%
 error_ratio = as.data.table(error_ratio)
 
 error_ratio_ <- head(error_ratio[order(error_ratio$error_percentage,
-                                 decreasing=TRUE), ], 5) 
+                                       decreasing=TRUE), ], 5) 
 
 percentage <- error_ratio_ %>% group_by(`Error Message`)
-  
+
 
 kable(percentage)
 ```
@@ -79,21 +102,21 @@ meanlateweek3 <- aggr_main %>%
 
 
 meanlateallweeks <- aggr_main %>%
-    mutate( meanlate =  mean(late_success) ) %>%
+  mutate( meanlate =  mean(late_success) ) %>%
   select(sample_count,meanlate)
 
 
 meanerrorallweeks <- aggr_main %>%
-    mutate( meanerr =  mean(Error_Response) ) %>%
+  mutate( meanerr =  mean(Error_Response) ) %>%
   select(sample_count,meanerr)
 
 meansuccessallweeks <- aggr_main %>%
-    mutate( meansuccess =  mean(success) ) %>%
+  mutate( meansuccess =  mean(success) ) %>%
   select(sample_count,meansuccess)
 
 
 meansamplecount <- aggr_main %>%
-    mutate( meansample =  mean(sample_count) ) %>%
+  mutate( meansample =  mean(sample_count) ) %>%
   select(sample_count, meansample)
 
 
@@ -115,9 +138,9 @@ finale <- finalmeantable %>%
 
 
 finaleratio <- finale %>%
-    mutate(meanlateratio = meanlate/meansample,
-           meanerroratio = meanerr/meansample,
-           meansuccratio = meansuccess/meansample) 
+  mutate(meanlateratio = meanlate/meansample,
+         meanerroratio = meanerr/meansample,
+         meansuccratio = meansuccess/meansample) 
 
 
 
@@ -133,7 +156,7 @@ the number of requests using the a linear model method
 
 
 plotit <- ggplot(aggr_main , aes(x=late_success  , y= sample_count ,
-                               col= Error_Response )) + geom_point() +
+                                 col= Error_Response )) + geom_point() +
   geom_smooth(method = "lm") 
 
 plotit
@@ -153,8 +176,8 @@ aggr_main %>%
   geom_point() +
   geom_smooth(method = "lm", color = "red", se = FALSE) +
   labs(title = "how late_success behave with total requests")
-  
-  
+
+
 ```
 
 
