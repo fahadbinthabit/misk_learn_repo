@@ -23,9 +23,6 @@ mimo <- na.omit(mimo)
 
 
 
-g <- ggplot(aes(x= Counntry, y = ))
-
-
 
 # :
 
@@ -88,10 +85,9 @@ t.test(   ~  )
 
 defense_budget %>%
   mutate(name = fct_reorder(Country, `Defense Budget`)) %>%
-  ggplot( aes(x= name, y = `Defense Budget`, col = Country  )) +
-  geom_jitter(stat="identity", fill= "#4b5320" , alpha=.4, width=2 , show.legend = FALSE) +
-  coord_flip() +
-  xlab("") +
+  ggplot( aes(x= name, y = `Defense Budget`, col = Country  )) + 
+  geom_jitter( stat="identity", fill= "#4b5320" , alpha=.4, width=2 , show.legend = FALSE) + labs(title = "Military budget" , x = "budget" , y = "country"  ) +
+ 
   theme_bw()
  
 as_tibble(mitlitary_units_tidy)  %>%
